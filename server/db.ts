@@ -1,6 +1,7 @@
 import fs from 'fs';
 import path from 'path';
 import crypto from 'crypto';
+import os from 'os';
 
 export type VehicleAvailability = 'Available' | 'Reserved' | 'Sold' | 'Archived';
 
@@ -88,7 +89,7 @@ export interface DealershipDatabase {
   admin: AdminCredential;
 }
 
-const DATA_DIR = path.join(process.cwd(), 'data');
+const DATA_DIR = process.env.VERCEL ? path.join(os.tmpdir(), 'ekta-data') : path.join(process.cwd(), 'data');
 const DB_FILE = path.join(DATA_DIR, 'dealership.json');
 
 // Helper to format INR
@@ -188,7 +189,7 @@ function ensureDbLoaded(): DealershipDatabase {
         return dbCache;
       }
     } catch (err) {
-      console.error('Error reading dealership.json, re-initializing', err);
+      console.warn('[Dealership DB] Warning reading dealership.json, using memory default:', err);
     }
   }
 
@@ -217,7 +218,7 @@ function saveDb(): void {
     fs.writeFileSync(tempFile, JSON.stringify(dbCache, null, 2), 'utf-8');
     fs.renameSync(tempFile, DB_FILE);
   } catch (err) {
-    console.error('Failed to save dealership.json', err);
+    console.warn('[Dealership DB] Memory fallback active, failed to save dealership.json:', err);
   }
 }
 

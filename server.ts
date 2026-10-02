@@ -3,7 +3,7 @@ import http from 'http';
 import path from 'path';
 import fs from 'fs';
 import cors from 'cors';
-import { createServer as createViteServer } from 'vite';
+// Dynamic import used in development only
 import {
   getAdminCredentials,
   verifyPassword,
@@ -2031,6 +2031,7 @@ Sitemap: ${origin}/sitemap.xml
   const isDevelopment = process.env.NODE_ENV === 'development';
 
   if (isDevelopment) {
+    const { createServer: createViteServer } = await import('vite');
     const vite = await createViteServer({
       server: {
         middlewareMode: true,

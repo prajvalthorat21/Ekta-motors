@@ -1,0 +1,12 @@
+{
+  "version": 2,
+  "cleanUrls": true,
+  "rewrites": [
+    { "source": "/api/(.*)", "destination": "/api" },
+    { "source": "/admin/login", "destination": "/admin-login.html" },
+    { "source": "/admin/dashboard", "destination": "/admin-dashboard.html" },
+    { "source": "/admin", "destination": "/admin-login.html" },
+    { "source": "/cars/:id", "destination": "/index.html" },
+    { "source": "/vehicle/:id", "destination": "/index.html" }
+  ]
+}

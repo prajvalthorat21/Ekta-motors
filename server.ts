@@ -60,7 +60,8 @@ const allowedOrigins = [
   'http://localhost:5173',
   'http://127.0.0.1:5173',
   process.env.APP_URL,
-  'https://ekta-motors.onrender.com'
+  'https://ekta-motors.onrender.com',
+  'https://ekta-motors.vercel.app'
 ].filter(Boolean) as string[];
 
 app.use(cors({
@@ -70,7 +71,8 @@ app.use(cors({
     
     const isDev = process.env.NODE_ENV !== 'production';
     const isLocalhost = isDev && (origin.startsWith('http://localhost:') || origin.startsWith('http://127.0.0.1:'));
-    if (allowedOrigins.includes(origin) || isLocalhost) {
+    const isVercel = origin.endsWith('.vercel.app');
+    if (allowedOrigins.includes(origin) || isLocalhost || isVercel) {
       callback(null, true);
     } else {
       callback(new Error(`CORS policy violation: origin ${origin} is not allowed.`));
@@ -1883,7 +1885,7 @@ async function startServer() {
   // Production robots.txt
   app.get('/robots.txt', (req, res) => {
     res.setHeader('Content-Type', 'text/plain; charset=utf-8');
-    const origin = process.env.PUBLIC_ORIGIN || 'https://ekta-motors.onrender.com';
+    const origin = process.env.PUBLIC_ORIGIN || 'https://ekta-motors.vercel.app';
     const robotsTxt = `User-agent: *
 Allow: /
 Allow: /cars/
@@ -1909,7 +1911,7 @@ Sitemap: ${origin}/sitemap.xml
   app.get('/sitemap.xml', async (req, res) => {
     res.setHeader('Content-Type', 'application/xml; charset=utf-8');
     try {
-      const origin = process.env.PUBLIC_ORIGIN || 'https://ekta-motors.onrender.com';
+      const origin = process.env.PUBLIC_ORIGIN || 'https://ekta-motors.vercel.app';
       const { vehicles } = await getVehiclesFromSupabase();
       const available = (vehicles || []).filter(v => normalizeAvailability(v.availability) === 'Available');
       const now = new Date().toISOString().split('T')[0];
@@ -2076,4 +2078,9 @@ Sitemap: ${origin}/sitemap.xml
   });
 }
 
-startServer();
+if (!process.env.VERCEL) {
+  startServer();
+}
+
+export { app, startServer };
+export default app;

@@ -1,0 +1,6 @@
+{
+  "name": "Ekta Motors",
+  "description": "Ekta Motors automobile dealership featuring vehicle inventory, in-details loan & EMI calculator with amortization schedules, side-by-side vehicle comparison, and test drive booking.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

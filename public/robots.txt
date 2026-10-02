@@ -1,0 +1,17 @@
+User-agent: *
+Allow: /
+Allow: /cars/
+Allow: /images/
+Allow: /assets/
+Allow: /styles.css
+Allow: /script.js
+Allow: /site.webmanifest
+Disallow: /admin
+Disallow: /admin/
+Disallow: /admin-login.html
+Disallow: /admin-dashboard.html
+Disallow: /api/
+Disallow: /data/
+Disallow: /src/
+
+Sitemap: https://ekta-motors.onrender.com/sitemap.xml

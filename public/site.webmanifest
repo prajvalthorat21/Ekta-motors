@@ -1,0 +1,16 @@
+{
+  "name": "Ekta Motors | Quality Pre-Owned Cars Jalna",
+  "short_name": "Ekta Motors",
+  "description": "Pre-owned car dealership on Aurangabad Road, Jalna, Maharashtra. Verified cars, transparent pricing, and complete paperwork support.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#050811",
+  "theme_color": "#0f172a",
+  "icons": [
+    {
+      "src": "/images/logo.png",
+      "sizes": "192x192 512x512",
+      "type": "image/png"
+    }
+  ]
+}

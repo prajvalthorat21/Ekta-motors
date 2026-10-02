@@ -1,0 +1,734 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Dealership Administrator Login | Ekta Motors</title>
+    <meta name="description" content="Secure administrative authentication for Ekta Motors dealership management." />
+    <meta name="robots" content="noindex, nofollow, noarchive" />
+    <link rel="icon" type="image/png" href="/images/logo.png" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Playfair+Display:ital,wght@0,600;0,700;1,600&display=swap" rel="stylesheet" />
+    <style>
+      :root {
+        --bg-deep: #050811;
+        --bg-navy: #0b1329;
+        --bg-card: rgba(13, 23, 48, 0.88);
+        --border-navy: rgba(59, 130, 246, 0.22);
+        --border-focus: #3b82f6;
+        --blue-primary: #2563eb;
+        --blue-hover: #1d4ed8;
+        --blue-glow: rgba(37, 99, 235, 0.35);
+        --text-primary: #f8fafc;
+        --text-secondary: #94a3b8;
+        --text-muted: #64748b;
+        --danger-bg: rgba(239, 68, 68, 0.12);
+        --danger-border: rgba(239, 68, 68, 0.35);
+        --danger-text: #fca5a5;
+        --success-bg: rgba(16, 185, 129, 0.12);
+        --success-border: rgba(16, 185, 129, 0.35);
+        --success-text: #86efac;
+      }
+
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+
+      html {
+        background-color: #050811 !important;
+        color-scheme: dark;
+      }
+
+      body {
+        min-height: 100vh;
+        background-color: #050811 !important;
+        background-image: 
+          radial-gradient(circle at 15% 20%, rgba(37, 99, 235, 0.16) 0%, transparent 45%),
+          radial-gradient(circle at 85% 80%, rgba(30, 64, 175, 0.2) 0%, transparent 50%),
+          radial-gradient(circle at 50% 50%, #0c152c 0%, #050811 100%);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 1.5rem;
+        color: var(--text-primary);
+        font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        -webkit-font-smoothing: antialiased;
+      }
+
+      .login-wrapper {
+        width: 100%;
+        max-width: 460px;
+        position: relative;
+      }
+
+      /* Subtle decorative ambient glow behind card */
+      .login-wrapper::before {
+        content: '';
+        position: absolute;
+        inset: -1px;
+        background: linear-gradient(135deg, rgba(59, 130, 246, 0.4), rgba(29, 78, 216, 0.1), rgba(37, 99, 235, 0.3));
+        border-radius: 24px;
+        z-index: 0;
+        filter: blur(14px);
+        opacity: 0.6;
+        pointer-events: none;
+        transition: opacity 0.3s ease;
+      }
+
+      .login-card {
+        position: relative;
+        z-index: 1;
+        background: #0d1730;
+        border: 1px solid var(--border-navy);
+        border-radius: 22px;
+        padding: 2.5rem 2.25rem;
+        box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.8), 0 0 0 1px rgba(255, 255, 255, 0.05);
+      }
+
+      .login-header {
+        text-align: center;
+        margin-bottom: 2rem;
+      }
+
+      .brand-crest {
+        width: 58px;
+        height: 58px;
+        background: linear-gradient(135deg, #1d4ed8, #2563eb);
+        border-radius: 16px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: 1.15rem;
+        box-shadow: 0 10px 25px -5px var(--blue-glow), inset 0 1px 1px rgba(255, 255, 255, 0.4);
+        border: 1px solid rgba(255, 255, 255, 0.15);
+      }
+
+      .security-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.4rem;
+        background: rgba(37, 99, 235, 0.12);
+        color: #93c5fd;
+        border: 1px solid rgba(59, 130, 246, 0.3);
+        border-radius: 9999px;
+        padding: 0.28rem 0.85rem;
+        font-size: 0.725rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.06em;
+        margin-bottom: 1rem;
+      }
+
+      .security-badge svg {
+        color: #60a5fa;
+      }
+
+      .brand-title {
+        font-family: 'Playfair Display', Georgia, serif;
+        font-size: 1.85rem;
+        font-weight: 700;
+        letter-spacing: -0.02em;
+        color: #ffffff;
+        margin-bottom: 0.25rem;
+      }
+
+      .brand-sub {
+        font-size: 0.875rem;
+        color: var(--text-secondary);
+        font-weight: 400;
+      }
+
+      /* Alert banners */
+      .alert-banner {
+        padding: 0.875rem 1rem;
+        border-radius: 12px;
+        font-size: 0.8125rem;
+        line-height: 1.45;
+        margin-bottom: 1.5rem;
+        display: none;
+        align-items: flex-start;
+        gap: 0.65rem;
+      }
+
+      .alert-banner.danger {
+        background: var(--danger-bg);
+        border: 1px solid var(--danger-border);
+        color: var(--danger-text);
+      }
+
+      .alert-banner.success {
+        background: var(--success-bg);
+        border: 1px solid var(--success-border);
+        color: var(--success-text);
+      }
+
+      .alert-banner svg {
+        flex-shrink: 0;
+        margin-top: 0.1rem;
+      }
+
+      /* Form styling */
+      .form-group {
+        margin-bottom: 1.25rem;
+        text-align: left;
+      }
+
+      .form-label {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        font-size: 0.8125rem;
+        font-weight: 600;
+        color: #cbd5e1;
+        margin-bottom: 0.5rem;
+      }
+
+      .form-label-hint {
+        font-size: 0.75rem;
+        font-weight: 500;
+        color: #60a5fa;
+      }
+
+      .input-container {
+        position: relative;
+        display: flex;
+        align-items: center;
+      }
+
+      .input-icon-left {
+        position: absolute;
+        left: 0.95rem;
+        color: #64748b;
+        pointer-events: none;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: color 0.2s ease;
+      }
+
+      .login-field {
+        width: 100%;
+        background: rgba(8, 14, 28, 0.75);
+        border: 1px solid rgba(255, 255, 255, 0.12);
+        border-radius: 12px;
+        padding: 0.85rem 1rem 0.85rem 2.65rem;
+        color: #ffffff;
+        font-size: 0.9375rem;
+        font-family: inherit;
+        transition: all 0.2s ease;
+      }
+
+      .login-field::placeholder {
+        color: #64748b;
+      }
+
+      .login-field:focus {
+        outline: none;
+        border-color: var(--border-focus);
+        background: rgba(8, 14, 28, 0.95);
+        box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.25);
+      }
+
+      .login-field:focus + .input-icon-left,
+      .input-container:focus-within .input-icon-left {
+        color: #60a5fa;
+      }
+
+      .btn-eye-toggle {
+        position: absolute;
+        right: 0.75rem;
+        background: transparent;
+        border: none;
+        color: #64748b;
+        cursor: pointer;
+        padding: 0.4rem;
+        border-radius: 6px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: color 0.2s ease;
+      }
+
+      .btn-eye-toggle:hover {
+        color: #e2e8f0;
+      }
+
+      /* Submit Button */
+      .btn-submit {
+        width: 100%;
+        background: linear-gradient(135deg, #2563eb, #1d4ed8);
+        color: #ffffff;
+        border: none;
+        border-radius: 12px;
+        padding: 0.95rem 1.25rem;
+        font-size: 0.9375rem;
+        font-weight: 700;
+        letter-spacing: 0.01em;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.6rem;
+        box-shadow: 0 10px 25px -5px rgba(37, 99, 235, 0.5);
+        transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+        margin-top: 1.5rem;
+      }
+
+      .btn-submit:hover:not(:disabled) {
+        background: linear-gradient(135deg, #1d4ed8, #1e40af);
+        transform: translateY(-1px);
+        box-shadow: 0 14px 28px -6px rgba(37, 99, 235, 0.6);
+      }
+
+      .btn-submit:active:not(:disabled) {
+        transform: translateY(0);
+      }
+
+      .btn-submit:disabled {
+        opacity: 0.65;
+        cursor: not-allowed;
+        transform: none;
+      }
+
+      /* Mock Credentials Hint Box */
+      .creds-panel {
+        background: rgba(15, 23, 42, 0.65);
+        border: 1px solid rgba(59, 130, 246, 0.2);
+        border-radius: 14px;
+        padding: 1.15rem;
+        margin-top: 1.75rem;
+        text-align: left;
+      }
+
+      .creds-panel-title {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        font-size: 0.775rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        color: #93c5fd;
+        margin-bottom: 0.65rem;
+      }
+
+      .creds-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 0.75rem;
+        background: rgba(8, 14, 28, 0.5);
+        padding: 0.75rem 0.85rem;
+        border-radius: 8px;
+        border: 1px solid rgba(255, 255, 255, 0.06);
+        font-size: 0.8125rem;
+      }
+
+      .creds-item span {
+        display: block;
+        color: var(--text-muted);
+        font-size: 0.7rem;
+        text-transform: uppercase;
+        letter-spacing: 0.04em;
+        margin-bottom: 0.15rem;
+      }
+
+      .creds-item strong {
+        color: #ffffff;
+        font-family: monospace;
+        font-size: 0.875rem;
+        letter-spacing: 0.02em;
+      }
+
+      .btn-auto-fill {
+        width: 100%;
+        margin-top: 0.75rem;
+        background: rgba(37, 99, 235, 0.15);
+        color: #60a5fa;
+        border: 1px solid rgba(59, 130, 246, 0.35);
+        border-radius: 8px;
+        padding: 0.5rem 0.75rem;
+        font-size: 0.775rem;
+        font-weight: 600;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.4rem;
+        transition: all 0.2s ease;
+      }
+
+      .btn-auto-fill:hover {
+        background: rgba(37, 99, 235, 0.28);
+        border-color: #60a5fa;
+        color: #ffffff;
+      }
+
+      .return-link {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.4rem;
+        margin-top: 1.5rem;
+        color: var(--text-muted);
+        font-size: 0.8125rem;
+        text-decoration: none;
+        transition: color 0.2s ease;
+      }
+
+      .return-link:hover {
+        color: #cbd5e1;
+      }
+
+      /* Shake animation for invalid attempt */
+      @keyframes shake {
+        0%, 100% { transform: translateX(0); }
+        20%, 60% { transform: translateX(-6px); }
+        40%, 80% { transform: translateX(6px); }
+      }
+
+      .shake-effect {
+        animation: shake 0.4s ease-in-out;
+      }
+
+      /* Spinner */
+      .spinner {
+        width: 18px;
+        height: 18px;
+        border: 2px solid rgba(255, 255, 255, 0.3);
+        border-top-color: #ffffff;
+        border-radius: 50%;
+        animation: spin 0.7s linear infinite;
+        display: inline-block;
+      }
+
+      @keyframes spin {
+        to { transform: rotate(360deg); }
+      }
+
+      /* Responsive rules for mobile screens */
+      @media (max-width: 480px) {
+        body {
+          padding: 1rem 0.75rem;
+        }
+        .login-card {
+          padding: 1.75rem 1.25rem;
+          border-radius: 16px;
+        }
+        .brand-crest {
+          width: 48px;
+          height: 48px;
+          border-radius: 12px;
+          margin-bottom: 0.85rem;
+        }
+        .brand-title {
+          font-size: 1.5rem;
+        }
+        .btn-submit {
+          min-height: 48px;
+        }
+        .form-control {
+          font-size: 16px; /* Prevents iOS auto-zoom */
+        }
+      }
+
+      @media (max-width: 360px) {
+        body {
+          padding: 0.75rem 0.5rem;
+        }
+        .login-card {
+          padding: 1.35rem 1rem;
+        }
+        .brand-title {
+          font-size: 1.3rem;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="login-wrapper">
+      <div class="login-card" id="login-card">
+        <!-- Brand Header -->
+        <div class="login-header">
+          <div class="brand-crest">
+            <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" />
+            </svg>
+          </div>
+          <div>
+            <div class="security-badge">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
+                <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+              </svg>
+              <span>Authorized Personnel Only</span>
+            </div>
+          </div>
+          <h1 class="brand-title">EKTA MOTORS</h1>
+          <p class="brand-sub">Dealership Administration & Inventory Console</p>
+        </div>
+
+        <!-- Dynamic Feedback Alert -->
+        <div id="login-alert" class="alert-banner" role="alert">
+          <svg id="alert-icon-danger" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="10"></circle>
+            <line x1="12" y1="8" x2="12" y2="12"></line>
+            <line x1="12" y1="16" x2="12.01" y2="16"></line>
+          </svg>
+          <svg id="alert-icon-success" style="display: none;" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+            <polyline points="22 4 12 14.01 9 11.01"></polyline>
+          </svg>
+          <span id="alert-text"></span>
+        </div>
+
+        <!-- Authentication Form -->
+        <form id="admin-login-form" novalidate>
+          <!-- Admin ID Field -->
+          <div class="form-group">
+            <label for="admin-id" class="form-label">
+              <span>Administrator ID</span>
+              <span class="form-label-hint">Auth ID</span>
+            </label>
+            <div class="input-container">
+              <div class="input-icon-left">
+                <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                  <circle cx="12" cy="7" r="4"></circle>
+                </svg>
+              </div>
+              <input
+                type="text"
+                id="admin-id"
+                name="admin_username"
+                class="login-field"
+                placeholder="Enter ID or Email"
+                required
+                autocomplete="username"
+                autofocus
+              />
+            </div>
+          </div>
+
+          <!-- Password Field -->
+          <div class="form-group">
+            <label for="admin-pass" class="form-label">
+              <span>Security Password</span>
+              <span class="form-label-hint">Passkey</span>
+            </label>
+            <div class="input-container">
+              <div class="input-icon-left">
+                <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+                  <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+                </svg>
+              </div>
+              <input
+                type="password"
+                id="admin-pass"
+                name="admin_password"
+                class="login-field"
+                placeholder="Enter password"
+                required
+                autocomplete="current-password"
+              />
+              <button type="button" class="btn-eye-toggle" id="btn-toggle-eye" aria-label="Toggle password visibility">
+                <svg id="icon-eye-open" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                  <circle cx="12" cy="12" r="3"></circle>
+                </svg>
+                <svg id="icon-eye-closed" style="display: none;" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path>
+                  <line x1="1" y1="1" x2="23" y2="23"></line>
+                </svg>
+              </button>
+            </div>
+          </div>
+
+          <!-- Submit Button -->
+          <button type="submit" class="btn-submit" id="btn-login-submit">
+            <span id="btn-icon">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+                <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"></path>
+                <polyline points="10 17 15 12 10 7"></polyline>
+                <line x1="15" y1="12" x2="3" y2="12"></line>
+              </svg>
+            </span>
+            <span id="btn-label">Access Dealership Dashboard</span>
+          </button>
+        </form>
+
+        <!-- Back to Showroom -->
+        <div style="text-align: center; margin-top: 1.75rem;">
+          <a href="/" class="return-link">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <line x1="19" y1="12" x2="5" y2="12"></line>
+              <polyline points="12 19 5 12 12 5"></polyline>
+            </svg>
+            <span>Return to Customer Showroom</span>
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Client-Side Authentication Controller -->
+    <script>
+      (function() {
+        "use strict";
+
+        const form = document.getElementById("admin-login-form");
+        const idInput = document.getElementById("admin-id");
+        const passInput = document.getElementById("admin-pass");
+        const alertBanner = document.getElementById("login-alert");
+        const alertText = document.getElementById("alert-text");
+        const iconDanger = document.getElementById("alert-icon-danger");
+        const iconSuccess = document.getElementById("alert-icon-success");
+        const submitBtn = document.getElementById("btn-login-submit");
+        const btnLabel = document.getElementById("btn-label");
+        const btnIcon = document.getElementById("btn-icon");
+        const eyeBtn = document.getElementById("btn-toggle-eye");
+        const eyeOpen = document.getElementById("icon-eye-open");
+        const eyeClosed = document.getElementById("icon-eye-closed");
+        const loginCard = document.getElementById("login-card");
+
+        // Ensure clean inputs on initial load
+        if (idInput) idInput.value = "";
+        if (passInput) passInput.value = "";
+
+        // Helper: Show alert banner
+        function showAlert(message, type = "danger") {
+          alertBanner.className = `alert-banner ${type}`;
+          alertText.textContent = message;
+          if (type === "success") {
+            iconDanger.style.display = "none";
+            iconSuccess.style.display = "block";
+          } else {
+            iconDanger.style.display = "block";
+            iconSuccess.style.display = "none";
+          }
+          alertBanner.style.display = "flex";
+        }
+
+        function hideAlert() {
+          alertBanner.style.display = "none";
+        }
+
+        // Password visibility toggle
+        eyeBtn.addEventListener("click", () => {
+          const isPassword = passInput.type === "password";
+          passInput.type = isPassword ? "text" : "password";
+          eyeOpen.style.display = isPassword ? "none" : "block";
+          eyeClosed.style.display = isPassword ? "block" : "none";
+          passInput.focus();
+        });
+
+        // Form Submit & Authentication Verification
+        form.addEventListener("submit", async (e) => {
+          e.preventDefault();
+          hideAlert();
+
+          const enteredId = idInput.value.trim();
+          const enteredPass = passInput.value;
+
+          if (!enteredId) {
+            showAlert("Please enter your Administrator ID or Email.", "danger");
+            idInput.focus();
+            return;
+          }
+
+          if (!enteredPass) {
+            showAlert("Please enter your access password.", "danger");
+            passInput.focus();
+            return;
+          }
+
+          // Visual loading state
+          submitBtn.disabled = true;
+          btnIcon.innerHTML = `<span class="spinner"></span>`;
+          btnLabel.textContent = "Verifying Credentials...";
+
+          try {
+            // Proactively ensure proxy security cookies
+            try {
+              const hostname = window.location.hostname || "";
+              const domainPart = hostname ? `; Domain=${hostname}` : "";
+              document.cookie = `__SECURE-aistudio_auth_flow_may_set_cookies=true; Path=/; Secure; SameSite=None${domainPart}; Partitioned; Max-Age=86400;`;
+              document.cookie = `__SECURE-aistudio_auth_flow_may_set_cookies=true; Path=/; Secure; SameSite=None; Partitioned; Max-Age=86400;`;
+            } catch (_) {}
+
+            const res = await fetch("/api/auth/login", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              credentials: "include",
+              body: JSON.stringify({
+                id: enteredId,
+                pass: enteredPass
+              })
+            });
+
+            let data = {};
+            try {
+              data = await res.json();
+            } catch (_) {
+              data = { error: "Unexpected response from server. Please try again." };
+            }
+
+            if (res.ok && data.success) {
+              // Store session token and flags for authenticated state
+              if (data.token) {
+                localStorage.setItem("ekta_admin_token", data.token);
+                // Also set client cookie for browser navigations
+                document.cookie = `ekta_admin_token=${encodeURIComponent(data.token)}; path=/; max-age=86400; SameSite=Lax`;
+                document.cookie = `ekta_admin_token_sec=${encodeURIComponent(data.token)}; path=/; max-age=86400; SameSite=None; Secure; Partitioned`;
+                document.cookie = `__SECURE-aistudio_auth_flow_may_set_cookies=true; path=/; max-age=86400; SameSite=None; Secure; Partitioned`;
+              }
+              localStorage.setItem("ekta_admin_session", "true");
+              localStorage.setItem("ekta_admin_user", data.user?.username || "ektamotors");
+
+              showAlert("Authorized: Access Granted. Opening Ekta Motors Dashboard...", "success");
+              btnLabel.textContent = "Redirecting to Dashboard...";
+
+              // Redirect immediately to /admin/dashboard
+              window.location.replace("/admin/dashboard");
+            } else {
+              // Authentication failed: stay on login page and show error
+              loginCard.classList.remove("shake-effect");
+              void loginCard.offsetWidth;
+              loginCard.classList.add("shake-effect");
+
+              showAlert(data.error || "Invalid admin credentials. Access Denied.", "danger");
+              submitBtn.disabled = false;
+              btnIcon.innerHTML = `
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+                  <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"></path>
+                  <polyline points="10 17 15 12 10 7"></polyline>
+                  <line x1="15" y1="12" x2="3" y2="12"></line>
+                </svg>
+              `;
+              btnLabel.textContent = "Access Dealership Dashboard";
+              passInput.value = "";
+              passInput.focus();
+            }
+          } catch (err) {
+            console.error("Login request error", err);
+            loginCard.classList.remove("shake-effect");
+            void loginCard.offsetWidth;
+            loginCard.classList.add("shake-effect");
+
+            showAlert("Server communication error. Please try again.", "danger");
+            submitBtn.disabled = false;
+            btnIcon.innerHTML = `
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+                <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"></path>
+                <polyline points="10 17 15 12 10 7"></polyline>
+                <line x1="15" y1="12" x2="3" y2="12"></line>
+              </svg>
+            `;
+            btnLabel.textContent = "Access Dealership Dashboard";
+          }
+        });
+      })();
+    </script>
+  </body>
+</html>

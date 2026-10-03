@@ -798,21 +798,42 @@ document.addEventListener("DOMContentLoaded", () => {
     const year = car.year || new Date().getFullYear();
     const name = getCarCardDisplayName(car, year);
     const powertrain = formatCarCardPowertrain(car);
+    const transmission = car.transmission || "Manual";
+    let kmRaw = car.kilometersDriven || car.mileage || car.km;
+    let kmText = "Verified KM";
+    if (kmRaw) {
+      let num = typeof kmRaw === "string" ? parseInt(kmRaw.replace(/[^0-9]/g, ""), 10) : Number(kmRaw);
+      kmText = !isNaN(num) && num > 0 ? `${num.toLocaleString("en-IN")} km` : String(kmRaw);
+    }
     const priceText = formatCarCardPrice(car);
+    const isReserved = (car.availability && car.availability.toLowerCase() === "reserved") || (car.status && car.status.toLowerCase() === "reserved");
+    const has360 = (Array.isArray(car.exterior360) && car.exterior360.length > 0) || (Array.isArray(car.interior360) && car.interior360.length > 0);
 
     return `
       <article class="vehicle-card universal-car-card" data-id="${escapeHtml(String(car.id))}">
         <div class="card-media" role="button" tabindex="0" aria-label="View details for ${escapeHtml(name)}">
           <img src="${escapeHtml(carImg)}" alt="${escapeHtml(String(year))} ${escapeHtml(name)}" class="card-img" loading="lazy" onerror="this.onerror=null; this.src='${PHOTO_UNAVAILABLE_DATA_URI}';">
+          ${isReserved ? `<span class="card-status-badge is-reserved">Reserved</span>` : ``}
+          ${has360 ? `<span class="card-360-badge" title="360° Interactive View Available"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/></svg> 360°</span>` : ``}
         </div>
         <div class="card-body">
-          <div class="card-year">${escapeHtml(String(year))}</div>
           <h3 class="card-title" title="${escapeHtml(name)}">${escapeHtml(name)}</h3>
-          <div class="card-powertrain">${escapeHtml(powertrain)}</div>
-          <div class="card-price">${escapeHtml(priceText)}</div>
-          <button type="button" class="btn btn-details car-view-details-btn" data-id="${escapeHtml(String(car.id))}" aria-label="View details for ${escapeHtml(name)}">
-            VIEW DETAILS &rarr;
-          </button>
+          <div class="card-specs-row">
+            <span>${escapeHtml(String(year))}</span>
+            <span class="spec-dot">&bull;</span>
+            <span>${escapeHtml(powertrain)}</span>
+            <span class="spec-dot">&bull;</span>
+            <span>${escapeHtml(transmission)}</span>
+          </div>
+          <div class="card-km-row">${escapeHtml(kmText)}</div>
+          <div class="card-price-row">
+            <span class="card-price-val">${escapeHtml(priceText)}</span>
+          </div>
+          <div class="card-action-row">
+            <button type="button" class="btn btn-primary btn-card-details car-view-details-btn btn-details" data-id="${escapeHtml(String(car.id))}" aria-label="View details for ${escapeHtml(name)}">
+              View Details
+            </button>
+          </div>
         </div>
       </article>
     `;
@@ -1259,7 +1280,7 @@ document.addEventListener("DOMContentLoaded", () => {
             <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
               <span class="badge ${car.badgeClass}">${car.badge}</span>
               <span class="badge badge-dark">${car.bodyType}</span>
-              <span class="badge" style="background: rgba(3, 105, 161, 0.15); color: #0284c7; font-weight:700; border: 1px solid rgba(3, 105, 161, 0.3);">${car.fuelType.toUpperCase()}</span>
+              <span class="badge" style="background: rgba(197, 168, 128, 0.12); color: #C5A880; font-weight: 700; border: 1px solid rgba(197, 168, 128, 0.35);">${car.fuelType.toUpperCase()}</span>
             </div>
             <h2 class="details-title" style="margin-top: 0.5rem;">${car.year} ${car.name}</h2>
             <div style="font-size: 0.9rem; color: var(--color-text-muted, #64748b);">${car.trim}</div>
@@ -1355,7 +1376,7 @@ document.addEventListener("DOMContentLoaded", () => {
                   <div class="calc-field-group">
                     <label class="calc-label" style="font-weight: 700;">
                       <span>Car Price (₹ INR)</span>
-                      <span style="font-size: 0.8125rem; color: var(--color-primary, #3b82f6); font-weight: 700;">${car.priceFormatted}</span>
+                      <span style="font-size: 0.8125rem; color: #C5A880; font-weight: 700;">${car.priceFormatted}</span>
                     </label>
                     <input type="hidden" id="inmodal-price" value="${car.price}">
                   </div>
@@ -1407,7 +1428,7 @@ document.addEventListener("DOMContentLoaded", () => {
                   <div class="calc-field-group">
                     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.35rem;">
                       <label class="calc-label" style="margin: 0; font-size: 0.8125rem; font-weight: 600;">Annual Interest Rate (APR)</label>
-                      <span id="inmodal-rate-display" style="font-size: 0.75rem; font-weight: 700; color: var(--color-primary, #3b82f6);">8.5%</span>
+                      <span id="inmodal-rate-display" style="font-size: 0.75rem; font-weight: 700; color: #C5A880;">8.5%</span>
                     </div>
                     <input type="range" id="inmodal-rate-slider" class="calc-range-slider" min="5" max="18" step="0.1" value="8.5">
                     <div class="rate-presets-row" style="display: flex; gap: 0.35rem; margin-top: 0.4rem; flex-wrap: wrap;">
@@ -1441,7 +1462,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
                   <!-- Composition Bar -->
                   <div class="calc-composition-bar" style="height: 8px; border-radius: 4px; overflow: hidden; display: flex; background: rgba(255,255,255,0.15); margin: 0.5rem 0;">
-                    <div id="inmodal-bar-principal" style="width: 70%; background: #60a5fa;" title="Principal"></div>
+                    <div id="inmodal-bar-principal" style="width: 70%; background: #C5A880;" title="Principal"></div>
                     <div id="inmodal-bar-interest" style="width: 20%; background: #f59e0b;" title="Interest"></div>
                     <div id="inmodal-bar-tax" style="width: 10%; background: #10b981;" title="Taxes"></div>
                   </div>
@@ -1470,12 +1491,12 @@ document.addEventListener("DOMContentLoaded", () => {
                     </div>
                     <div style="display: flex; justify-content: space-between; border-top: 1px solid rgba(255,255,255,0.15); padding-top: 0.4rem; font-weight: 700;">
                       <span>Total Overall Cost:</span>
-                      <span id="inmodal-res-total" style="color: #60a5fa;">₹0</span>
+                      <span id="inmodal-res-total" style="color: #C5A880;">₹0</span>
                     </div>
                   </div>
 
                   <!-- Action Buttons -->
-                  <button type="button" class="btn btn-primary btn-block" id="inmodal-apply-btn" style="margin-top: 0.5rem; background: #2563eb;">
+                  <button type="button" class="btn btn-primary btn-block" id="inmodal-apply-btn" style="margin-top: 0.5rem; background: #C5A880; color: #0A0D14;;">
                     Apply for Pre-Approval with this Quote
                   </button>
                   <button type="button" class="btn btn-secondary btn-sm btn-block" id="inmodal-back-to-specs">
@@ -2992,7 +3013,7 @@ document.addEventListener("DOMContentLoaded", () => {
         <tr>
           <td>Year ${yr} (${monthCounter} mos)</td>
           <td>${formatINR(startBalance)}</td>
-          <td style="color: var(--color-primary, #3b82f6); font-weight: 600;">+${formatINR(yearPrincipal)}</td>
+          <td style="color: #C5A880; font-weight: 600;">+${formatINR(yearPrincipal)}</td>
           <td style="color: #f59e0b; font-weight: 600;">+${formatINR(yearInterest)}</td>
           <td>${formatINR(totalYearPayment)}</td>
           <td style="font-weight: 700; color: var(--color-heading-main, var(--slate-900));">${formatINR(balance)}</td>
@@ -3488,7 +3509,7 @@ document.addEventListener("DOMContentLoaded", () => {
           if (details) {
             details.innerHTML = `
               Thank you, <strong>${escapeHtml(payload.customer_name)}</strong>! Your test drive for <strong>${escapeHtml(selectedCar)}</strong> (${escapeHtml(selectedService)}) is reserved.
-              <br>Booking Reference: <strong style="color: #60a5fa;">${bookingRef}</strong>
+              <br>Booking Reference: <strong style="color: #C5A880;">${bookingRef}</strong>
               <br>Date &amp; Slot: <strong>${escapeHtml(formattedSlot)}</strong>
               <br>Our dealership coordinator will call you at <strong>${escapeHtml(payload.phone)}</strong> to confirm slot delivery.
             `;
@@ -3628,7 +3649,7 @@ document.addEventListener("DOMContentLoaded", () => {
           if (details) {
             details.innerHTML = `
               Thank you, <strong>${escapeHtml(payload.buyer_name)}</strong>! Your booking request for <strong>${escapeHtml(payload.vehicle_name)}</strong> (${escapeHtml(payload.preferred_color)}) has been recorded.
-              <br>Booking Reference: <strong style="color: #60a5fa;">${bookingRef}</strong>
+              <br>Booking Reference: <strong style="color: #C5A880;">${bookingRef}</strong>
               <br>Delivery City: <strong>${escapeHtml(payload.city)}</strong>
               ${payload.delivery_target ? `<br>Preferred Delivery: <strong>${escapeHtml(payload.delivery_target)}</strong>` : ''}
               <br>Our dealership relationship manager will contact you at <strong>${escapeHtml(payload.phone)}</strong> to verify details and confirm reservation.
